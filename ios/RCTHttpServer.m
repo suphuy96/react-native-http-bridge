@@ -96,14 +96,17 @@ RCT_EXPORT_METHOD(respond: (NSString *) requestId
                   body: (NSString *) body)
 {
     NSData* data = [body dataUsingEncoding:NSUTF8StringEncoding];
-    GCDWebServerDataResponse* requestResponse = [[GCDWebServerDataResponse alloc] initWithData:data contentType:type];
-    requestResponse.statusCode = code;
+  GCDWebServerResponse *requestResponse = [[GCDWebServerDataResponse alloc] initWithData:data contentType:type];
+     requestResponse.gzipContentEncodingEnabled = true;
+     requestResponse.statusCode = code;
+         requestResponse.gzipContentEncodingEnabled = true;
+         [requestResponse setValue:@"*" forAdditionalHeader:@"Access-Control-Allow-Origin"];
 
-    GCDWebServerCompletionBlock completionBlock = nil;
-    @synchronized (self) {
-        completionBlock = [_completionBlocks objectForKey:requestId];
-        [_completionBlocks removeObjectForKey:requestId];
-    }
+     GCDWebServerCompletionBlock completionBlock = nil;
+     @synchronized (self) {
+         completionBlock = [_completionBlocks objectForKey:requestId];
+         [_completionBlocks removeObjectForKey:requestId];
+     }
 
     completionBlock(requestResponse);
 }
