@@ -58,6 +58,7 @@ public class Server extends NanoHTTPD {
             }
         }
         Response response = responses.get(requestId);
+        response.addHeader("Access-Control-Allow-Origin","*");
         responses.remove(requestId);
         return response;
     }
